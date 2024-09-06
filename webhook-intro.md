@@ -101,10 +101,6 @@ CUBID offers a range of webhooks that provide real-time notifications about impo
 
 8. **User Deactivated**: Triggered when a user's CUBID account is deactivated or suspended, requiring their account in your App to be locked.
 
-9. **User Reactivated**: Triggered when a deactivated user reactivates their CUBID account, allowing them to regain access to your App.
-
-10. **Password Reset Triggered**: Triggered when a user initiates a password reset process, allowing you to lock the session and prompt re-authentication.
-
 These webhooks ensure your App can adapt dynamically to identity events, improving security, user experience, and trust in real-time.
 
 ---
