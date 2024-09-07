@@ -197,7 +197,7 @@ Example:
 
 ---
 
-### 4. **Fetch Identity**
+### 4. Fetch Identity
 
 ##### Purpose:
 Retrieves a user's identity data by fetching available stamps and their unique values for a specific user.
@@ -252,7 +252,7 @@ Example:
 
 ---
 
-### 5. **Fetch Overall Score**
+### 5. Fetch Overall Score
 
 ##### Purpose:
 Calculates and returns CUBID's overall score based on the user's identity and engagement data. The score can be desicribed as a probabilistic approach to proof-of-personhood.
@@ -303,7 +303,7 @@ Example:
 
 ---
 
-### 6. **Fetch Score Details**
+### 6. Fetch Score Details
 
 ##### Purpose:
 Retrieves the score details for a user by calculating their total score based on their stamps, where the score for each stamp is unique depending on how hard it is to forge.

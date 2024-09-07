@@ -1,10 +1,10 @@
-### **Webhook Reference: Event Types**
+### Webhook Reference: Event Types
 
 Below are the detailed descriptions of the webhooks available in CUBID:
 
 ---
 
-#### 1. **Blacklisted Stamp (Sybil Attack Detected)**
+#### 1. Blacklisted Stamp (Sybil Attack Detected)
 
 **Trigger**: When a user’s stamp is blacklisted, either due to suspicious activity, account compromise, or Sybil attack detection. This could originate from within your App or in another App within the CUBID ecosystem.
 
@@ -33,7 +33,7 @@ Below are the detailed descriptions of the webhooks available in CUBID:
 
 ---
 
-#### 2. **Merged Users**
+#### 2. Merged Users
 
 **Trigger**: When a user merges multiple accounts to resolve issues like duplicate identities, resulting in one account being un-blacklisted and another account becoming obsolete, assuming both accounts were previously registered with your App.
 
@@ -61,7 +61,7 @@ Below are the detailed descriptions of the webhooks available in CUBID:
 
 ---
 
-#### 3. **Score Increased**
+#### 3. Score Increased
 
 **Trigger**: When a user strengthens their identity by adding a new stamp or taking other actions that improve their overall score.
 
@@ -89,7 +89,7 @@ Below are the detailed descriptions of the webhooks available in CUBID:
 
 ---
 
-#### 4. **Score Decreased**
+#### 4. Score Decreased
 
 **Trigger**: When a user’s score drops due to a blacklisted or expired stamp. 
 
@@ -112,7 +112,7 @@ Below are the detailed descriptions of the webhooks available in CUBID:
 
 ---
 
-#### 5. **New Stamp Added**
+#### 5. New Stamp Added
 
 **Trigger**: When a user adds a new stamp to their CUBID profile, strengthening their identity.
 
@@ -133,7 +133,7 @@ Below are the detailed descriptions of the webhooks available in CUBID:
 
 ---
 
-#### 6. **Stamp Expired**
+#### 6. Stamp Expired
 
 **Trigger**: When a user’s stamp expires, leading to a potential drop in their identity strength.
 
@@ -154,7 +154,7 @@ Below are the detailed descriptions of the webhooks available in CUBID:
 
 ---
 
-#### 7. **Stamp Removed (Deauthorized)**
+#### 7. Stamp Removed (Deauthorized)
 
 **Trigger**: When a user revokes or deauthorizes a previously shared stamp for your App.
 
@@ -175,7 +175,7 @@ Below are the detailed descriptions of the webhooks available in CUBID:
 
 ---
 
-#### 8. **User Deactivated**
+#### 8. User Deactivated
 
 **Trigger**: When a user’s CUBID account is deactivated or suspended.
 
