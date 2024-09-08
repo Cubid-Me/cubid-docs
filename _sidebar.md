@@ -1,4 +1,3 @@
-## Table of Contents
 - [Introduction to CUBID](introduction.md)
 - [Our Terminology](terminology.md)
 - [API Intro](api-intro.md)

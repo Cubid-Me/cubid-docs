@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Document</title>
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-  <meta name="description" content="Description">
+  <meta name="description" content="Technical design docs for the CUBID project, see more at https://cubid.me">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
   <link rel="stylesheet" media="(prefers-color-scheme: light)" href="https://cdn.jsdelivr.net/npm/docsify-themeable@0/dist/css/theme-simple.css">
   <link rel="stylesheet" media="(prefers-color-scheme: dark)" href="https://cdn.jsdelivr.net/npm/docsify-themeable@0/dist/css/theme-simple-dark.css">
@@ -13,12 +13,13 @@
   <div id="app"></div>
   <script>
     window.$docsify = {
-      name: 'Cubid Docs',
+      name: 'CUBID Docs',
       repo: '',
-      loadSidebar: true,   <!-- This enables the sidebar loading -->
-      subMaxLevel: 2,      <!-- This specifies the level of subheaders -->
-      basePath: '/docs/',   <!-- Base path set to /docs/ -->
-      noHeader: true,       <!-- This disables per-document TOC -->
+      loadSidebar: true,      <!-- This enables the sidebar loading -->
+      subMaxLevel: 3,         <!-- This specifies the level of subheaders -->
+      sidebarDisplayLevel: 1,
+      basePath: '',           <!-- Base path was previously set to /docs/ -->
+      noHeader: false,        <!-- This disables per-document TOC -->
       homepage: 'introduction.md',
     };
   </script>
@@ -28,4 +29,7 @@
   <script src="https://cdn.jsdelivr.net/npm/docsify-themeable@0/dist/js/docsify-themeable.min.js"></script>
   <!-- docsify-pagination from https://github.com/imyelo/docsify-pagination -->
   <script src="//unpkg.com/docsify-pagination/dist/docsify-pagination.min.js"></script>
-  </html>
+  <!-- Collapsible Sidebar plugin from https://github.com/iPeng6/docsify-sidebar-collapse -->
+  <script src="//cdn.jsdelivr.net/npm/docsify-sidebar-collapse/dist/docsify-sidebar-collapse.min.js"></script>
+</body>
+</html>
