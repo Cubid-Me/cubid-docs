@@ -1,4 +1,4 @@
-## CUBID Webhooks (TBD - coming soon)
+# CUBID Webhooks (TBD - coming soon)
 
 CUBID provides a comprehensive suite of webhooks designed to help App developers and founders stay informed about key changes in user identity and trust scores. These webhooks allow Apps to receive real-time updates about users’ identity actions, enabling them to respond effectively to identity strengthening, potential threats (such as Sybil attacks), and changes in trust levels.
 
@@ -6,7 +6,7 @@ By integrating with CUBID’s webhooks, Apps can dynamically adapt to identity e
 
 ---
 
-### Overview
+## Overview
 
 CUBID’s webhooks notify Apps about events related to user identity, such as stamps being blacklisted, trust scores increasing or decreasing, and account merges. These real-time events allow Apps to take appropriate actions, such as updating permissions, sending notifications, or locking accounts.
 
@@ -16,11 +16,11 @@ While you will only receive webhooks for users that registered with our App, web
 
 ---
 
-### Subscription
+## Subscription
 
 To set up webhooks, App developers must register their webhook URLs either through the **Admin Console at [console.cubid.me](https://console.cubid.me)** or via the API. Once registered, the system will automatically send event notifications to the provided URL when relevant events occur. A webhook secret will also be provisioned, which is required for verifying the authenticity of incoming requests.
 
-#### Registering a Webhook URL Using the Admin Console
+### Registering a Webhook URL Using the Admin Console
 
 Developers can easily register their webhook URLs through the **Admin Console**:
 
@@ -32,11 +32,11 @@ Developers can easily register their webhook URLs through the **Admin Console**:
 
 This webhook secret is essential for validating incoming webhook requests (see **Webhook Secret** section below for details on verifying signatures).
 
-#### Registering a Webhook URL Using the API
+### Registering a Webhook URL Using the API
 
 For programmatic webhook registration, developers can also register via the API. To register or unsubscribe from a webhook, both an `apikey` and a `dapp_id` must be passed in the request, and both should be UUIDv4 format.
 
-##### API to Register a Webhook:
+### API to Register a Webhook:
 
 ```json
 POST /api/v2/webhooks/register
@@ -55,11 +55,11 @@ POST /api/v2/webhooks/register
 
 To unsubscribe, send a similar request to the **unsubscription API**, using the same parameters.
 
-### Configuration / Webhook Secret
+## Configuration / Webhook Secret
 
 When registering a webhook (either via the Admin Console or the API), CUBID provides a webhook secret. This secret is crucial for ensuring the authenticity of incoming webhook requests.
 
-#### Signature
+### Signature
 CUBID sends a signature header (`X-Cubid-Signature`) with each webhook request. The signature is an HMAC-SHA256 hash of the payload, signed using your webhook secret. Your app should verify this signature before processing the payload to ensure it hasn’t been tampered with.
 
 **Example in Node.js:**
@@ -81,7 +81,7 @@ You can retrieve the webhook secret from the **Admin Console** under your app’
 
 ---
 
-### Summary of CUBID Webhooks
+## Summary of CUBID Webhooks
 
 CUBID offers a range of webhooks that provide real-time notifications about important identity events for users interacting with your App. These webhooks help Apps manage user accounts dynamically, ensure security, and maintain up-to-date identity data across the CUBID ecosystem.
 
@@ -105,7 +105,7 @@ These webhooks ensure your App can adapt dynamically to identity events, improvi
 
 ---
 
-### HTTP Response & Retry Logic
+## HTTP Response & Retry Logic
 
 Whether registered via the **Admin Console** or the **API**, CUBID applies the following retry policy to all webhooks.
 
@@ -119,7 +119,7 @@ Whether registered via the **Admin Console** or the **API**, CUBID applies the f
 
 ---
 
-### Testing & Debugging
+## Testing & Debugging
 
 To test webhook integrations, CUBID offers a sandbox mode where you can simulate webhook events and verify your application’s response. Additionally, you can replay webhook events for debugging purposes through the CUBID dashboard.
 

@@ -1,5 +1,7 @@
 # Recommended Design Principles
-We strongly recommend that Apps store only the `user_id` from CUBID in their back-end databases and avoid storing any additional user data. Instead, Apps should query the minimum required dataset directly into the front end on an as-needed basis, for each authenticated user session. In some use cases, caching specific data for the duration of the session may improve performance without sacrificing security, especially for high-frequency data needs. Our APIs are designed to be fast and reliable, optimized for repeated queries. 
+We strongly recommend that Apps **store only the `user_id` from CUBID in their back-end databases** and avoid storing any additional user data. Thereafter, Apps should query the minimum required dataset directly into the front end on an **as-needed basis only, for each authenticated user session**. In some use cases, caching specific data for the duration of the session may improve performance without sacrificing security, especially for high-frequency data needs. 
+
+Our APIs are designed to be fast and reliable, optimized for repeated queries. 
 
 Following this approach helps reduce attack vectors and ensures the user's sensitive data remains as secure as possible:
 

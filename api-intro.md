@@ -1,6 +1,8 @@
 # API v2 Overview
 This v2 API documentation simplifies and enhances consistency across endpoints while maintaining robust security and functionality for both Web2 and Web3 platforms.
 
+## Overview
+
 #### App-scoped User IDs
 CUBID always generates an App-scoped `user_id`, which means that the user identifier for a user is different in your App from what it would be in other Apps. We take this approach in order to preserve user privacy across apps, and also to dramatically enhance security. Another benefit of this approach is that we can elliminate the need to include `dapp_id` from the API calls in most cases.
 
@@ -22,27 +24,29 @@ What CUBID provides is validation that the information that is sent to you has b
 
 If for example a user created two CUBID accounts and tried to use the same phone number in both, even if it was for different apps, then that phone number would be blacklisted for both user accounts, and the score would diminish for both.
 
-### Summary of CUBID API Endpoints
-1. **Create User**
+## Endpoints
+*This is an overview. Find the details in the next document "API Reference"*
+
+#### Create User
    - Endpoint: `/api/v2/create_user`
    - Purpose: Creates a new CUBID user for your dapp. Assigns a unique `user_id` identifier to correspond with your own user identifier (e.g. email).
 
-2. **Get App-Scoped EVM Public Key**
+#### Get App-Scoped EVM Public Key
    - Endpoint: `/api/v2/pk/fetch_evm_public_key`
    - Purpose: Generates a new Ethereum wallet (EVM account / public key) for a user.
 
-3. **Fetch User Data**
+#### Fetch User Data
    - Endpoint: `/api/v2/identity/fetch_user_data`
    - Purpose: Retrieves detailed data related to a specific user, including stamps and scoring information.
 
-4. **Fetch Identity**
+#### Fetch Identity
    - Endpoint: `/api/v2/identity/fetch_identity`
    - Purpose: Retrieves a user's identity details by fetching stamp data for identity verification.
 
-5. **Fetch Score Overview**
+#### Fetch Score Overview
    - Endpoint: `/api/v2/score/fetch_score`
    - Purpose: Fetches and calculates a user's total cumulative score based on their accumulated stamps.
 
-6. **Fetch Score Details**
+#### Fetch Score Details
    - Endpoint: `/api/v2/score/fetch_score_details`
    - Purpose: Fetches and calculates a user's scores for each of their identity records, as well as the total cumulative score across all of their accumulated stamps.

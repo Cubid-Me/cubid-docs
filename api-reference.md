@@ -1,8 +1,8 @@
 # API v2 Endpoint Reference Details
 
-### 1. Create App-scoped User
+## 1. Create App-scoped User
 
-##### Purpose:
+### Purpose:
 This API creates a new user (`user_id`) for the App if none exists, creates a stamp for the provided auth identity (e.g. email, phone) if it didn't already exist, and associates the new user with the stamp. The API then returns the `user_id` along with a bool indicating if we had to create a new user or if it already existed.
 
 Typically use this upon a new user sucessfully authenticating and either starting or completing new user registration with your app. Also use when an existing user returns which you hadn't previously registered with CUBID.
@@ -15,10 +15,10 @@ Creating a `user_id` for each user is the entry port to accessing CUBID's servic
 - quadratic voting apps
 - universal basic income
 
-##### Endpoint:
+### Endpoint:
 `POST /api/v2/create_user`
 
-##### What It Does:
+### What It Does:
 - Checks if a user exists by their unique identifier (e.g. `email` or `phone`) within the provdied App scope.
 - If no such App-scoped user exists
     - Creates a new (unverified) stamp for the unique identifier.
@@ -28,7 +28,7 @@ Creating a `user_id` for each user is the entry port to accessing CUBID's servic
 - If App-scoped user existed
     - Return `user_id` with `newuser` = `false`
 
-##### Request Parameters:
+### Request Parameters:
 
 | Parameter      | Type                              | Required | Description                                                        | Example                                |
 |----------------|-----------------------------------|----------|--------------------------------------------------------------------|----------------------------------------|
@@ -54,7 +54,7 @@ Example:
 }
 ```
 
-##### Response:
+### Response:
 
 | Field      | Type    | Description                                     |
 |------------|---------|-------------------------------------------------|
@@ -80,28 +80,28 @@ Example (second call / existing user):
 }
 ```
 
-##### Notes:
+### Notes:
 - Feel free to approach us with suggestions for other `stamp_types` you'd like to see supported.
 - `newuser` indicates if the user was new within your App scope. It does not indicate whether or not the user previously existed within the broader CUBID scope.
 - Typical scenario: You received a new user and validated against CUBID. You will receive `newuser` = `true` (independent of whether the user pre-existed in CUBID from other Apps)
 - Sybil attack scenario: The user tried to create a second account with your App, which CUBID detected as a reentrancy / Sybil attack. You expected `newuser` = `true` but received `newuser` = `false`. You should build your business logic to handle this case. 
 ---
 
-### 2. Fetch App-Scoped EVM Public Key
+## 2. Fetch App-Scoped EVM Public Key
 
-##### Purpose:
+### Purpose:
 Generates a net new Ethereum public key (EVM account) for a user to use within your App.
 
-##### Endpoint:
+### Endpoint:
 `POST /api/v2/pk/fetch_evm_public_key`
 
-##### What It Does:
+### What It Does:
 - Generates and stores an Ethereum-compatible account (EVM public / private key pair) for the user.
 - Associates the account uniquely with the user and with your App.
 - Returns only the public key of the account.
 - If called a second time for the same user, then will return the same public key.
 
-##### Request Parameters:
+### Request Parameters:
 
 | Parameter | Type   | Required | Description                               |
 |-----------|--------|----------|-------------------------------------------|
@@ -116,7 +116,7 @@ Example:
 }
 ```
 
-##### Response:
+### Response:
 
 | Field      | Type   | Description                                      |
 |------------|--------|--------------------------------------------------|
@@ -131,7 +131,7 @@ Example:
 }
 ```
 
-##### Notes:
+### Notes:
 - This API should not be used to retreive a user's other available 3rd party EVM accounts (such as MetaMask Wallet accounts)
 - Does not natively enable the user to sign transactions. This function should only be called if you plan on transferring NFTs or FTs to the user without their active on-chain involvement. In other words, you must support gas-less or paymaster transactions on behalf of your users.
 - Advanced users will be able to later export the private key to any of their 3rd party wallets, if they so choose.
@@ -142,19 +142,19 @@ Example:
 
 ---
 
-### 3. Fetch User Data
+## 3. Fetch User Data
 
-##### Purpose:
+### Purpose:
 Fetches "soft" (unverified and/or shared with other users) data related to a specific user. Examples could include name, address, profile picture, etc.
 
-##### Endpoint:
+### Endpoint:
 `POST /api/v2/identity/fetch_user_data`
 
-##### What It Does:
+### What It Does:
 - Retrieves user data as authorized by the user for this App.
 - Returns stamps and scores associated with the user.
 
-##### Request Parameters:
+### Request Parameters:
 
 | Parameter | Type   | Required | Description                               |
 |-----------|--------|----------|-------------------------------------------|
@@ -169,7 +169,7 @@ Example:
 }
 ```
 
-##### Response:
+### Response:
 
 | Field         | Type   | Description                                      |
 |---------------|--------|--------------------------------------------------|
@@ -191,25 +191,25 @@ Example:
 }
 ```
 
-##### Notes
+### Notes
 - The content within the response of this API may be added to and/or changed over time.
 - The is_human flag signifes if the user is treated within CUBID as a single human user, vs. has registered up front as a group or organization. It does not signify whether the user has subsequently been deemed a real human vs. a Sybil attacker or bot. See thee Blacklisted webhooks for that particular distinction.
 
 ---
 
-### 4. Fetch Identity
+## 4. Fetch Identity
 
-##### Purpose:
+### Purpose:
 Retrieves a user's identity data by fetching available stamps and their unique values for a specific user.
 
-##### Endpoint:
+### Endpoint:
 `POST /api/v2/identity/fetch_identity`
 
-##### What It Does:
+### What It Does:
 - Fetches user stamp data based on their `user_id`.
 - Retrieves the unique values for the stamps.
 
-##### Request Parameters:
+### Request Parameters:
 
 | Parameter | Type   | Required | Description                               |
 |-----------|--------|----------|-------------------------------------------|
@@ -224,7 +224,7 @@ Example:
 }
 ````
 
-##### Response:
+### Response:
 
 | Field         | Type   | Description                                      |
 |---------------|--------|--------------------------------------------------|
@@ -252,19 +252,19 @@ Example:
 
 ---
 
-### 5. Fetch Overall Score
+## 5. Fetch Overall Score
 
-##### Purpose:
+### Purpose:
 Calculates and returns CUBID's overall score based on the user's identity and engagement data. The score can be desicribed as a probabilistic approach to proof-of-personhood.
 
-##### Endpoint:
+### Endpoint:
 `POST /api/v2/score/fetch_score`
 
-##### What It Does:
+### What It Does:
 - Fetches identity and engagement data for the user.
 - Calculates the proof-of-personhood score.
 
-##### Request Parameters:
+### Request Parameters:
 
 | Parameter | Type   | Required | Description                               |
 |-----------|--------|----------|-------------------------------------------|
@@ -279,7 +279,7 @@ Example:
 }
 ```
 
-##### Response:
+### Response:
 
 | Field               | Type   | Description                                      |
 |---------------------|--------|--------------------------------------------------|
@@ -296,26 +296,26 @@ Example:
 }
 ```
 
-##### Notes
+### Notes
 - This API is similar to `/api/v2/score/get_score_details`, with the difference that this API only provides a summary of the score without the details.
 - The score is calculated dynamically based on the schema which was selected and defined as part of your App setup in CUBID's Admin Console.
 - The scoring logic is cumulative across `stamp_types` but not within the same type. In other words, he same `stamp_type` cannot be scored more than once. For example, if the user has three different `evm_accounts`, then only the account with the highest score will be considered in the score.
 
 ---
 
-### 6. Fetch Score Details
+## 6. Fetch Score Details
 
-##### Purpose:
+### Purpose:
 Retrieves the score details for a user by calculating their total score based on their stamps, where the score for each stamp is unique depending on how hard it is to forge.
 
-##### Endpoint:
+### Endpoint:
 `POST /api/v2/score/fetch_score_details`
 
-##### What It Does:
+### What It Does:
 - Fetches and the user’s individual scores for each stamp.
 - Provides a breakdown of stamps and associated values.
 
-##### Request Parameters:
+### Request Parameters:
 
 | Parameter | Type   | Required | Description                               |
 |-----------|--------|----------|-------------------------------------------|
@@ -330,7 +330,7 @@ Example:
 }
 ```
 
-##### Response:
+### Response:
 
 | Field         | Type   | Description                                      |
 |---------------|--------|--------------------------------------------------|
@@ -362,7 +362,7 @@ Example:
 }
 ```
 
-##### Notes
+### Notes
 - This API is similar to `/api/v2/score/fetch_score`, with the difference that this API also provides a breakdown of the score into it's components.
 - The score is calculated dynamically based on the schema which was selected and defined as part of your App setup in CUBID's Admin Console.
 - The scoring logic is cumulative across `stamp_types` but not within the same type. In other words, he same `stamp_type` cannot be scored more than once. For example, if the user has three different `evm_accounts`, then only the account with the highest score will be considered in the score.
