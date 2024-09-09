@@ -6,15 +6,67 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <meta name="description" content="Technical design docs for the CUBID project, see more at https://cubid.me">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
-  <link rel="stylesheet" media="(prefers-color-scheme: light)" href="https://cdn.jsdelivr.net/npm/docsify-themeable@0/dist/css/theme-simple.css">
-  <link rel="stylesheet" media="(prefers-color-scheme: dark)" href="https://cdn.jsdelivr.net/npm/docsify-themeable@0/dist/css/theme-simple-dark.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify-themeable@0/dist/css/theme-simple-dark.css">
+  <link rel="stylesheet" href="https://unpkg.com/docsify-toc@1.0.0/dist/toc.css">
   <!-- Custom theme styles -->
   <style>
     :root {
-      --base-font-size: ;
+      --base-font-size: 14 ;
       --theme-color   : rgb(255, 200, 0);
       --sidebar-background : #1d1910;
-}  </style>
+      --sidebar-width : 20rem;
+      --content-width : 50em;
+      --content-max-width : 55em;
+
+      --text-color-base: white;
+      --toc-width: 17rem;
+
+    }
+
+    /* For large screens */
+    @media screen and (min-width: 81.25em) { /* 1300px */
+      .nav {
+        width: var(--toc-width);     /* Fixed width for the ToC */
+        position: fixed;             /* Keep it fixed */
+        top: 0;
+        right: 0;
+        height: 100vh;               /* Full height of viewport */
+        overflow-y: auto;            /* Enable vertical scrolling */
+        padding: 1em;
+        padding-top: 5em;
+        background-color: rgb(41, 43, 53);
+      }
+
+      /* Ensure that ToC content fits within the scrollable area */
+      .page_toc {
+        max-height: calc(100vh - 5em);     /* Subtract the padding from the available viewport height */
+        overflow-y: auto;                  /* Ensure the ToC content itself is scrollable */
+      }
+
+
+      .markdown-section {
+        flex-grow: 1;                /* Allow the content to grow and take available space */
+        max-width: calc(100% - var(--toc-width)); /* Ensure content fits without overlapping ToC */
+        padding: 2rem;
+        margin-right: var(--toc-width); /* Respect the ToC space */
+      }
+    }
+
+    /* Hide ToC on small and medium screens */
+    @media screen and (max-width: 81.25em) { /* 1300px */
+      .nav {
+        display: none;  /* Hide ToC */
+      }
+
+      .content {
+        display: block; /* Ensure content takes full width */
+      }
+
+      .markdown-section {
+        margin: 0 auto; /* Center content */
+      }
+    }
+  </style>
 </head>
 <body>
   <div id="app"></div>
@@ -23,17 +75,27 @@
       name: 'CUBID Docs',
       repo: 'https://github.com/Cubid-Me/cubid-docs/',
       loadSidebar: true,            // This enables the sidebar loading
-      subMaxLevel: 3,               // This specifies the level of subheaders
+      subMaxLevel: 2,               // This specifies the level of subheaders
       sidebarDisplayLevel: 1,       // Starts the TOC collapsed
       basePath: '',                 // Base path was previously set to /docs/
       noHeader: false,              // This disables per-document TOC
       homepage: 'introduction.md',  // Changes from the defaul (README.md) file
+      auto2top: true,
+      scrollTo: true,               // Enable scroll syncing
+      toc: {
+        scope: '.markdown-section',
+        headings: 'h2, h3, h4, h5, h6',
+        title: '',
+      },
+
     };
   </script>
   <!-- docsify  -->
   <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/docsify.min.js"></script>
   <!-- docsify-themeable from https://jhildenbiddle.github.io/docsify-themeable/#/introduction -->
   <script src="https://cdn.jsdelivr.net/npm/docsify-themeable@0/dist/js/docsify-themeable.min.js"></script>
+  <!-- TOC  -->
+  <script src="https://unpkg.com/docsify-toc@1.0.0/dist/toc.js"></script>
   <!-- docsify-pagination from https://github.com/imyelo/docsify-pagination -->
   <script src="//unpkg.com/docsify-pagination/dist/docsify-pagination.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.js"></script>
