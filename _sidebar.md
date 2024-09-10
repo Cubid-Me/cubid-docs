@@ -4,4 +4,6 @@
 - [API Reference](api-reference.md)
 - [Webhook Intro & Setup](webhook-intro.md)
 - [Webhook Reference](webhook-reference.md)
+- [Admin Console Setup](admin-console-intro.md)
+- [Admin Console Reference](admin-console-reference.md)
 - [Design Principles](design-principles.md)
