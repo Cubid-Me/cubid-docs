@@ -1,6 +1,9 @@
 # Introduction to CUBID
 
-CUBID is a decentralized identity management and Sybil attack prevention protocol designed to help apps and users navigate secure identity verification while preserving privacy. It leverages cryptographic techniques, zero-knowledge proofs, and collaboration between apps to ensure that users are real (human) without exposing unnecessary personal data. CUBID's key functionalities include:
+CUBID is a decentralized identity management and Sybil attack prevention protocol designed to help apps and users navigate secure identity verification while preserving privacy. 
+
+## Key Features
+It leverages cryptographic techniques, zero-knowledge proofs, and collaboration between apps to ensure that users are real (human) without exposing unnecessary personal data. CUBID's key functionalities include:
 
 1. **Sybil Defense**: It prevents the creation of multiple fake accounts (Sybil attacks) by allowing apps to verify that users are unique without requiring sensitive personal information like government IDs.
    
@@ -12,6 +15,7 @@ CUBID is a decentralized identity management and Sybil attack prevention protoco
 
 5. **Collaborative Ecosystem**: CUBID aims to build an ecosystem of apps that collaborate on identity validation and trust-building, strengthening the integrity of the network as more apps participate.
 
+## A Cross-app Scoring Protocol
 The CUBID identity management platform  enhances security, privacy, and trust across a network of apps and websites, both in Web2 and Web3 (blockchain) environments. We collectively refer to such clients of CUBID as "Apps." Our central thesis is that a shared identity across multiple Apps not only strengthens user trust but also increases security and privacy at the same time.
 
 As users interact with multiple Apps within the CUBID ecosystem, their identity becomes more robust, and their trustworthiness increases. At the same time, the collaborative nature of this ecosystem helps detect and prevent Sybil attacks, as Apps share insights and leverage collective knowledge. To facilitate this collaboration, CUBID uses a combination of Webhooks and APIs to propagate critical updates about identities that are either strengthened or weakened. The key component to making this data interchange possible without disclosing any personal information is the **CUBID Scoring Algorithm**.
@@ -22,6 +26,7 @@ As users interact with multiple Apps within the CUBID ecosystem, their identity 
 
 Beyond managing user identities, CUBID also provides tools for secure Ethereum wallet creation and proof-of-personhood validation. Whether you’re looking to safeguard your platform against bots, manage decentralized identities, or verify user permissions, CUBID offers reliable, scalable solutions tailored to your needs.
 
+## Enabling New Capabilities
 CUBID enables wonderful new capabilities and use cases, such as: 
 Certainly! Here’s the reformatted list with the sub-bullets integrated into the main points:
 
@@ -51,12 +56,12 @@ Certainly! Here’s the reformatted list with the sub-bullets integrated into th
 
 - **Learn-to-Earn:** Rewards users for learning new skills or completing educational tasks while ensuring that rewards are given to unique, verified learners, preventing abuse and ensuring fair distribution of incentives.
 
-- **Government Support:** Not all governments today have reliable records of their Citizens. With some collaboration and customization, CUBID could help build a nationl datbase.
+- **Government Identities:** Not all governments today have reliable records of their Citizens. With some collaboration and customization, CUBID could be an awesome platform to help build a national citizen datbase.
 
 - **And Much More:** Enables innovative solutions in various fields where verifying the uniqueness and authenticity of individuals is crucial, including secure access to services, personalized experiences, and other emerging use cases.
 
-CUBID also significantly helps app developers in traditional use cases:
-Here are additional use cases that could benefit from a proof-of-personhood protocol:
+## Strengthening Traditional Use Cases
+CUBID also significantly helps app developers in traditional use cases. Here are some additional use cases that could benefit from a proof-of-personhood protocol:
 
 - **Access Control:** Provides secure and personalized access to physical or digital spaces, ensuring that only unique, verified individuals can enter or use specific services.
 
