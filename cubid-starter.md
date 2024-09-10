@@ -3,9 +3,9 @@
 
 ## Overview
 
-The **CUBID Starter App** is built using the **Next.js** framework on top of **Supabase**. It inherits its structure from both **Create React App** and **Create Next App**, making it familiar to developers experienced with React and Next.js. The app demonstrates how to interact with CUBID APIs for digital identity management, including fetching unique user identifiers (UUIDs), trust scores, and detailed identity information.
+The **CUBID Starter Demo App** is built using the **Next.js** framework on top of **Supabase**. It inherits its structure from both **Create React App** and **Create Next App**, making it familiar to developers experienced with React and Next.js. The app demonstrates how to interact with CUBID APIs for digital identity management, including fetching unique user identifiers (UUIDs), trust scores, and detailed identity information.
 
-The demo version of the app, which can be tested at [https://starter.cubid.me](https://starter.cubid.me/), is fully functional but does not store any user data, using Supabase only for authentication. This document provides technical guidance for developers on how to interact with the app and integrate CUBID APIs.
+The demo version of the app, which can be tested at [https://starter.cubid.me](https://starter.cubid.me/), is fully functional but does not store any user data, using Supabase only for authentication and API call handling. This document provides technical guidance for developers on how to interact with the app and integrate CUBID APIs.
 
 
 ## Getting Started
@@ -40,14 +40,18 @@ The authentication flow in the demo app is handled through **Supabase**. The app
 
 Once signed in, developers land on an API demo page that shows how to interact with the CUBID APIs. This page helps developers compose, send, and receive messages using the CUBID identity system.
 
+> NOTE: The demo page is a throwaway product. You should NOT keep it after you've fork the repo.
+
 ### API Demonstration Flow
 
 1. The page starts empty.
 2. The green button, **Get UUID**, sends the user's email credential to CUBID and returns an **app-scoped UUID** and a boolean value indicating whether this was a **new user**.
-3. The blue buttons trigger other API calls:
+3. The blue buttons trigger other API calls, sending the arguments as indicated on the screen to the various API endpoints. The app demos behavious for three of the v1 endpoints:
    - **Fetch Score**: Retrieves the user's overall trust score.
    - **Get Identity**: Returns detailed identity information.
    - **Get Score Details**: Fetches specific details about the user's identity stamps.
+
+> NOTE: Update these to use the v2 endoints when you build live!
 
 ### 1. Get UUID
 
@@ -184,10 +188,6 @@ Once you are familiar with the demo and how the CUBID APIs work, you can:
 3. Ensure secure storage of **API keys** and maintain **user privacy** by not exposing sensitive data unnecessarily.
 
 
-Here’s the rewritten final section, incorporating both pieces of information:
-
----
-
 ## Forking the Repository and Getting Started
 
 Follow these steps to fork the repository, set up Supabase and CUBID, and deploy your project:
@@ -223,6 +223,7 @@ For local development, create a `.env.local` file in the root of your project an
 NEXT_PUBLIC_SUPABASE_URL=<your-supabase-url>
 NEXT_PUBLIC_SUPABASE_ANON_KEY=<your-supabase-anon-key>
 NEXT_PUBLIC_CUBID_API_KEY=<your-cubid-api-key>
+NEXT_PUBLIC_CUBID_APP_ID=<your-cubid-app-id>
 ```
 
 ### 5. Deploy on Vercel or Netlify
@@ -248,7 +249,9 @@ Once your app is deployed:
 
 Now that your environment is set up:
 
+- Update the APIs to v2
 - Start developing your project by adding new features, fixing bugs, and improving the codebase.
 - Utilize the **documentation** and resources available for **Supabase** and **CUBID** to assist in your development process.
+- **Throw away the Demo Page** once your API calls work like you expect them to.
 
 Feel free to reach out to the community or refer to the repository’s README for additional guidance as you explore and extend the functionality of your app.
