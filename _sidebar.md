@@ -7,3 +7,4 @@
 - [Admin Console Setup](admin-console-intro.md)
 - [Admin Console Reference](admin-console-reference.md)
 - [Design Principles](design-principles.md)
+- [FAQs](faq.md)
