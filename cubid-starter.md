@@ -68,7 +68,7 @@ The first action involves clicking the **Get UUID** button.
 
 ```json
 {
-  "uuid": "cacfffb8-a683-4205-96e6-ab6b6c1a65cc",
+  "uuid": "cacfffb8-a683-4205-96e6-ab6b6c000000",
   "new_user_created": false
 }
 ```
@@ -111,12 +111,12 @@ This button retrieves identity details linked to the user's CUBID account.
 ```json
 {
   "score_details": [
-    {"near": "harrydhillon.near"},
-    {"phone": "918288807134"},
-    {"google": "harjaapdhillon.hrizn@gmail.com"},
-    {"gitcoin_passport": "0x712913366F98aa0A5E77EfddA05BaC65C52ae9bD"},
-    {"email": "harvydhillon16@gmail.com"},
-    {"evm": "0x712913366F98aa0A5E77EfddA05BaC65C52ae9bD"}
+    {"near": "useraccount.near"},
+    {"phone": "123456789000"},
+    {"google": "useremail@gmail.com"},
+    {"gitcoin_passport": "0x000000366F98aa0A5E77EfddA05BaC65C5000000"},
+    {"email": "useremail@hotmail.com"},
+    {"evm": "0x000000366F98aa0A5E77EfddA05BaC65C5000000"}
   ]
 }
 ```
