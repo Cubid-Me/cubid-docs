@@ -50,3 +50,33 @@ If for example a user created two CUBID accounts and tried to use the same phone
 #### Fetch Score Details
    - Endpoint: `/api/v2/score/fetch_score_details`
    - Purpose: Fetches and calculates a user's scores for each of their identity records, as well as the total cumulative score across all of their accumulated stamps.
+
+## Stamptypes Reference
+The following list outlines the available non-blockchain stamptypes. C
+- Currently we only support email, phone and evm for the `create-user` api. If you are interested in using other stamptypes in this API then please talk to us first.
+- All stamps are available for remaining APIs
+- For a comprehensive list of blockchain-related stamptypes, refer to the "Blockchain & Crypto" section
+
+| **Category** | *Stamptype** | **Description** | **Oauth Identifier** | **create_user-enabled** |
+|---|---|---|---|---|
+| blockchain | **evm** | EVM-compatible blockchains |  | **True** |
+| kyc | **fractal_basic** | Fractal KYC, Level=Basic |  | False |
+| kyc | **fractal_plus** | Fractal KYC, Level=Plus |  | False |
+| kyc | **sumsub** | SumSub User Identifier |  | False |
+| PII | **email** | Email |  | **True** |
+| PII | **phone** | Phone number |  | **True** |
+| social | **discord** | Discord Oauth 2.0 | id | (talk to us first) |
+| social | **facebook** | Facebook Oauth 2.0 | id | False |
+| social | **github_oauth** | GitHub Oauth 2.0 - default use case | id | (talk to us first) |
+| social | **github_apps** | GitHub for Apps and sometimes for Orgs and Enterprises | id | False |
+| social | **google** | Google Oauth 2.0 | sub | (talk to us first) |
+| social | **instagram** | Instagram Oauth 2.0 | user_id | False |
+| social | **linkedin** | LinkedIn Oauth 2.0 | id | (talk to us first) |
+| social | **telegram** | Telegram Oauth 2.0 | id | (talk to us first) |
+| social | **twitter** | Twitter Oauth 2.0 | id | (talk to us first) |
+| uniqueness | **brightid** | BrightID |  | (talk to us first) |
+| uniqueness | **gitcoin_passport** | Gitcoin Passport |  | (talk to us first) |
+| uniqueness | **gooddollar** | GoodDollar |  | (talk to us first) |
+| uniqueness | **idena** | Idena Protocol |  | (talk to us first) |
+| uniqueness | **proof_of_humanity** | Proof Of Humanity |  | (talk to us first) |
+| uniqueness | **worldcoin** | Worldcoin |  | (talk to us first) |

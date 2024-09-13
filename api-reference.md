@@ -1,9 +1,9 @@
 # API v2 Endpoint Reference Details
 
 ## 1. Create App-scoped User
+This API enables seamless integration between your app and the Cubid ecosystem by managing user identity creation and association. It automatically creates a new app-user (`user_id`) if one does not already exist, and links this user to a Cubid identity stamp based on their provided authentication (e.g., email, phone). Additionally, it returns whether the app-user was newly created ()`is_new_app_user`) and whether this is the first association for the Cubid user (`is_first_cubid_user`), helping to detect potential Sybil attacks.
 
 ### Purpose:
-This API creates a new user (`user_id`) for the App if none exists, creates a stamp for the provided auth identity (e.g. email, phone) if it didn't already exist, and associates the new user with the stamp. The API then returns the `user_id` along with a bool indicating if we had to create a new user or if it already existed.
 
 Typically use this upon a new user sucessfully authenticating and either starting or completing new user registration with your app. Also use when an existing user returns which you hadn't previously registered with CUBID.
 
@@ -19,14 +19,14 @@ Creating a `user_id` for each user is the entry port to accessing CUBID's servic
 `POST /api/v2/create_user`
 
 ### What It Does:
-- Checks if a user exists by their unique identifier (e.g. `email` or `phone`) within the provdied App scope.
-- If no such App-scoped user exists
-    - Creates a new (unverified) stamp for the unique identifier.
-    - Creates a new user if none exists.
-    - Associates the user with the stamp and `dapp_id`.
-    - Return `user_id` with `newuser` = `true`
-- If App-scoped user existed
-    - Return `user_id` with `newuser` = `false`
+This API does the following: 
+- creates a new app-user (`user_id`) for your App if none exists
+- creates a new cubid-user if none existed
+- creates a stamp for the provided auth identity (e.g. email, phone) in CUBID if it didn't already exist
+- associates the new app-user with the stamp
+- returns the `user_id` along with two booleans indicating 
+  - if we had to create a new app-user or if it already existed `is_new_app_user` (which you should presumably already know)
+  - if this is the first app-user for this cubid-user, or if it's a subsequent one `is_first_cubid_user` (i.e. a Sybil attack, which you wouldn't have known otherwise)
 
 ### Request Parameters:
 
@@ -58,15 +58,17 @@ Example:
 
 | Field      | Type    | Description                                     |
 |------------|---------|-------------------------------------------------|
-| user_id       | UUIDv4  | Unique identifier for the dapp user.            |
-| new_user    | Boolean | Indicates if a new user was created.            |
+| user_id    | UUIDv4  | Unique identifier for the dapp user.            |
+| is_new_app_user | Boolean | Indicates if a new user was created for our app.|
+| is_first_cubid_user | Boolean | Indicates if this is the first time this human (=cubid-user) appears in your app (=`true`), or if it a portential Sybil attack (=`false`).|
 | error      | String  | Error message if something goes wrong.          |
 
 Example (first call / new user):
 ```
 {
   "user_id": "f12e4567-e89b-42d3-a456-326614174bbb",
-  "new_user": true,
+  "is_new_app_user": true,
+  "is_first_cubid_user": true,
   "error": null
 }
 ```
