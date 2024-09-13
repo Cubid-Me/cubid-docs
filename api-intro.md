@@ -66,8 +66,8 @@ The following list outlines the available non-blockchain stamptypes. C
 | PII | **email** | Email |  | **True** |
 | PII | **phone** | Phone number |  | **True** |
 | social | **discord** | Discord Oauth 2.0 | id | (talk to us first) |
-| social | **facebook** | Facebook Oauth 2.0 | id | False |
-| social | **github_oauth** | GitHub Oauth 2.0 - default use case | id | (talk to us first) |
+| social | **facebook_oauth_id** | Facebook Oauth 2.0 | id | False |
+| social | **github_oauth_id** | GitHub Oauth 2.0 - default use case | id | (talk to us first) |
 | social | **github_apps** | GitHub for Apps and sometimes for Orgs and Enterprises | id | False |
 | social | **google** | Google Oauth 2.0 | sub | (talk to us first) |
 | social | **instagram** | Instagram Oauth 2.0 | user_id | False |

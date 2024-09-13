@@ -1,10 +1,11 @@
 # API v2 Endpoint Reference Details
 
 ## 1. Create App-scoped User
-This API enables seamless integration between your app and the Cubid ecosystem by managing user identity creation and association. It automatically creates a new app-user (`user_id`) if one does not already exist, and links this user to a Cubid identity stamp based on their provided authentication (e.g., email, phone). Additionally, it returns whether the app-user was newly created ()`is_new_app_user`) and whether this is the first association for the Cubid user (`is_first_cubid_user`), helping to detect potential Sybil attacks.
 
 ### Purpose:
+This API enables seamless integration between your app and the Cubid ecosystem by managing user identity creation and association. It automatically creates a new app-user (`user_id`) if one does not already exist, and links this user to a Cubid identity stamp based on their provided authentication (e.g., email, phone). Additionally, it returns whether the app-user was newly created ()`is_new_app_user`) and whether this is the first association for the Cubid user (`is_first_cubid_user`), helping to detect potential Sybil attacks.
 
+### More Info:
 Typically use this upon a new user sucessfully authenticating and either starting or completing new user registration with your app. Also use when an existing user returns which you hadn't previously registered with CUBID.
 
 Creating a `user_id` for each user is the entry port to accessing CUBID's services. The CUBID `user_id` can exist alongside your normal user identifier, or can replace it. But if proof-of-personhood, Sybil protection and/or bot-defense is a core requirement upon which your business logic depends, then it is recommended that you use the `user_id` from CUBID as your core user identifier thoughout your app. Doing so will minimize the logic you would otherwise have to build to handle account blacklisting, un-blacklisting, merging, de-authorization and removal. Examples of use cases where this applies include:
@@ -36,14 +37,11 @@ This API does the following:
 | dapp_id        | UUIDv4                            | Yes      | The ID of the App making the request.                             | 987e6543-e21c-65b4-c321-012345678900   |
 | email          | string                            | (*)      | User's email.                                                      | user@example.com                       |
 | phone          | uint                              | (*)      | User's phone number, including country code but without "+" sign.  | 14155552671                            |
-| evm_account    | string, 42 char, starting with 0x | (*)      | User's EVM-compatible public key.                                  | 0x1234567890abcdef1234567890abcdef12345678 |
-| github_sub     | string                            | (*)      | User's unique identifier (sub) from GitHub.                        | 98765432                               |
-| twitter_sub    | string                            | (*)      | User's unique identifier (sub) from Twitter.                       | 123456789                              |
-| google_sub     | string, 21 char                   | (*)      | User's unique identifier (sub) from Google.                        | 115789234567890123456                  |
-| linkedin_sub   | string                            | (*)      | User's unique identifier (sub) from LinkedIn.                      | ABCDEFGHIJKLMNOP                       |
-| evm_account    | string, 42 char, starting with 0x | (*)      | User's EVM-compatible public key.                                  | 0xabcdef1234567890abcdef1234567890abcdef12 |
+| evm            | string, 42 char, starting with 0x | (*)      | User's EVM-compatible public key.                                  | 0x1234567890abcdef1234567890abcdef12345678 |
 
 *) One (and only one) identifier is required, across all the available options.
+
+> NOTE: This list will expand over time. Refer to the last section of the previous chapter for a longer list of options we are working on enabling.
 
 Example:
 ```
