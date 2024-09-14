@@ -3,18 +3,20 @@
 ## 1. Create App-scoped User
 
 ### Purpose:
-This API enables seamless integration between your app and the Cubid ecosystem by managing user identity creation and association. It automatically creates a new app-user (`user_id`) if one does not already exist, and links this user to a Cubid identity stamp based on their provided authentication (e.g., email, phone). Additionally, it returns whether the app-user was newly created ()`is_new_app_user`) and whether this is the first association for the Cubid user (`is_first_cubid_user`), helping to detect potential Sybil attacks.
+This API enables seamless integration between your app and the Cubid ecosystem by managing user identity creation and association. Ita takes an AuthIdentifier as input. It then automatically creates a new app-user (`user_id`) if one does not already exist, and links this user to a Cubid identity stamp based on their provided AuthIdentifier (e.g., `email`, `phone`). Additionally, it returns whether the app-user was newly created ()`is_new_app_user`), whether this is the first association for the Cubid user (`is_first_cubid_user`), and also whether the AuthIdentifier was blacklisted (`is_blacklisted`), thereby helping to detect potential Sybil attacks.
 
 ### More Info:
 Typically use this upon a new user sucessfully authenticating and either starting or completing new user registration with your app. Also use when an existing user returns which you hadn't previously registered with CUBID.
 
-Creating a `user_id` for each user is the entry port to accessing CUBID's services. The CUBID `user_id` can exist alongside your normal user identifier, or can replace it. But if proof-of-personhood, Sybil protection and/or bot-defense is a core requirement upon which your business logic depends, then it is recommended that you use the `user_id` from CUBID as your core user identifier thoughout your app. Doing so will minimize the logic you would otherwise have to build to handle account blacklisting, un-blacklisting, merging, de-authorization and removal. Examples of use cases where this applies include:
+Creating a `user_id` for each user is the entry port to accessing CUBID's services. The CUBID `user_id` can exist alongside your normal user identifier, or can replace it. But if proof-of-personhood, Sybil protection and/or bot-defense is a core requirement upon which your business logic depends, then it is recommended that you use the `user_id` from CUBID as your core user identifier thoughout your app. Doing so will minimize the logic you would otherwise have to build to handle account blacklisting, un-blacklisting, merging, de-authorization and removal. 
+
+Examples of use cases where this applies include:
 - 1-person-1-vote apps
-- fairdrop dApps
-- learn-to-earn apps
-- quadratic funding apps
-- quadratic voting apps
-- universal basic income
+- Fairdrop dApps
+- Learn-to-earn apps
+- Quadratic funding apps
+- Quadratic voting apps
+- Universal basic income apps
 
 ### Endpoint:
 `POST /api/v2/create_user`
@@ -25,21 +27,35 @@ This API does the following:
 - creates a new cubid-user if none existed
 - creates a stamp for the provided auth identity (e.g. email, phone) in CUBID if it didn't already exist
 - associates the new app-user with the stamp
-- returns the `user_id` along with two booleans indicating 
-  - if we had to create a new app-user or if it already existed `is_new_app_user` (which you should presumably already know)
-  - if this is the first app-user for this cubid-user, or if it's a subsequent one `is_first_cubid_user` (i.e. a Sybil attack, which you wouldn't have known otherwise)
+- returns the `user_id` along with three booleans indicating 
+  - `is_new_app_user`: Set to `true` if we had to create a new app-user or `false` if it already existed  (which you would presumably already know, if your app keeps track of attempts)
+  - `is_first_cubid_user`: Set to `true` if this is the first app-user for this human / cubid-user, or `false` if it's a subsequent one (i.e. a new Sybil attack on your protocol)
+  - `is_blacklisted`: Set to `true` if this AuthIdentifier has already been used in a Sybil Attack elsewhere in the ecosystem, or `false` if CUBID has no knowledge of misconduct with this AuthIdentifier.
+
+### Cases:
+Permissive vs. non-permissive
+- **Permissive**: If `is_permissive` and `is_blacklisted` are both `true` then a `user_id` will be generated. Use this setting if you want to create the app-user and handle the issue within your app.
+- **Non-permissive**: If `is_permissive` is `false` or omitted, and `is_blacklisted` is `true` then no `user_id` will be generated, and an error will be returned. Use this scenario if you plan on throwing out the user immediately or want a simple error to react to.
+ 
+Typical vs. Sybil-attack scenarios 
+- **Typical sceneario**: You received a new user and validated against CUBID. You will receive `is_first_cubid_user` = `true` (independent of whether the user pre-existed in CUBID from other Apps) and `is_blacklisted` = `false`, indicating all is good
+- **Sybil attack scenario 1**: The user tried to create a second account with your App, which CUBID detected as a reentrancy / Sybil attack. You received `is_first_cubid_user` = `false`. 
+- **Sybil attack scenario 2**: The user had previously tried to create two or more accounts with this AuthIdentity, which CUBID had detected as a cross-site Sybil attack. You receive `is_blacklisted` = `true`. 
+
+
 
 ### Request Parameters:
 
 | Parameter      | Type                              | Required | Description                                                        | Example                                |
 |----------------|-----------------------------------|----------|--------------------------------------------------------------------|----------------------------------------|
-| apikey         | UUIDv4                            | Yes      | The API key for authentication.                                    | 123e4567-e89b-12d3-a456-426614174000   |
-| dapp_id        | UUIDv4                            | Yes      | The ID of the App making the request.                             | 987e6543-e21c-65b4-c321-012345678900   |
-| email          | string                            | (*)      | User's email.                                                      | user@example.com                       |
-| phone          | uint                              | (*)      | User's phone number, including country code but without "+" sign.  | 14155552671                            |
-| evm            | string, 42 char, starting with 0x | (*)      | User's EVM-compatible public key.                                  | 0x1234567890abcdef1234567890abcdef12345678 |
+| `apikey`         | UUIDv4                            | Yes      | The API key for authentication.                                    | 123e4567-e89b-12d3-a456-426614174000   |
+| `dapp_id`        | UUIDv4                            | Yes      | The ID of the App making the request.                             | 987e6543-e21c-65b4-c321-012345678900   |
+| `is_permissive`  | boolean                           | No      | Permissive returns a UUID if the identity is blacklisted. Defaults to non-permissive if omitted, which returns error if the identity is blacklisted.   | TRUE   |
+| `email`          | string                            | (*)      | User's email.                                                      | user@example.com                       |
+| `phone`          | uint                              | (*)      | User's phone number, including country code but without "+" sign.  | 14155552671                            |
+| `evm`            | string, 42 char, starting with 0x | (*)      | User's EVM-compatible public key.                                  | 0x1234567890abcdef1234567890abcdef12345678 |
 
-*) One (and only one) identifier is required, across all the available options.
+*) One (and only one) AuthIdentifier is required, across all the available options.
 
 > NOTE: This list will expand over time. Refer to the last section of the previous chapter for a longer list of options we are working on enabling.
 
@@ -48,7 +64,8 @@ Example:
 {
   "apikey": "123e4567-e89b-12d3-a456-426614174000",
   "dapp_id": "987e6543-e21c-65b4-c321-012345678900",
-  "email": "user@example.com"
+  "email": "user@example.com",
+  "permissive": TRUE
 }
 ```
 
@@ -56,9 +73,10 @@ Example:
 
 | Field      | Type    | Description                                     |
 |------------|---------|-------------------------------------------------|
-| user_id    | UUIDv4  | Unique identifier for the dapp user.            |
-| is_new_app_user | Boolean | Indicates if a new user was created for our app.|
-| is_first_cubid_user | Boolean | Indicates if this is the first time this human (=cubid-user) appears in your app (=`true`), or if it a portential Sybil attack (=`false`).|
+| `user_id`    | UUIDv4  | Unique identifier for the dapp user.            |
+| `is_new_app_user` | Boolean | Indicates if a new user was created for our app.|
+| `is_first_cubid_user` | Boolean | Indicates if this is the first time this human (=cubid-user) appears in your app (=`true`), or if it a portential Sybil attack (=`false`).|
+| `is_blacklisted` | Boolean | Indicates if the provided AuthIdentifier.|
 | error      | String  | Error message if something goes wrong.          |
 
 Example (first call / new user):
@@ -81,10 +99,8 @@ Example (second call / existing user):
 ```
 
 ### Notes:
-- Feel free to approach us with suggestions for other `stamp_types` you'd like to see supported.
+- Feel free to approach us with suggestions for other AuthIdentiy `stamp_types` you'd like to see supported.
 - `newuser` indicates if the user was new within your App scope. It does not indicate whether or not the user previously existed within the broader CUBID scope.
-- Typical scenario: You received a new user and validated against CUBID. You will receive `newuser` = `true` (independent of whether the user pre-existed in CUBID from other Apps)
-- Sybil attack scenario: The user tried to create a second account with your App, which CUBID detected as a reentrancy / Sybil attack. You expected `newuser` = `true` but received `newuser` = `false`. You should build your business logic to handle this case. 
 ---
 
 ## 2. Fetch App-Scoped EVM Public Key

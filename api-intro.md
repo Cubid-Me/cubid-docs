@@ -52,10 +52,10 @@ If for example a user created two CUBID accounts and tried to use the same phone
    - Purpose: Fetches and calculates a user's scores for each of their identity records, as well as the total cumulative score across all of their accumulated stamps.
 
 ## Stamptypes Reference
-The following list outlines the available non-blockchain stamptypes. C
+The following list outlines the available non-blockchain stamptypes.
 - Currently we only support email, phone and evm for the `create-user` api. If you are interested in using other stamptypes in this API then please talk to us first.
-- All stamps are available for remaining APIs
-- For a comprehensive list of blockchain-related stamptypes, refer to the "Blockchain & Crypto" section
+- All stamps are available for remaining APIs.
+- For a comprehensive list of blockchain-related stamptypes, refer to the "Blockchain & Crypto" section.
 
 | **Category** | *Stamptype** | **Description** | **Oauth Identifier** | **create_user-enabled** |
 |---|---|---|---|---|
@@ -63,20 +63,22 @@ The following list outlines the available non-blockchain stamptypes. C
 | kyc | **fractal_basic** | Fractal KYC, Level=Basic |  | False |
 | kyc | **fractal_plus** | Fractal KYC, Level=Plus |  | False |
 | kyc | **sumsub** | SumSub User Identifier |  | False |
-| PII | **email** | Email |  | **True** |
-| PII | **phone** | Phone number |  | **True** |
-| social | **discord** | Discord Oauth 2.0 | id | (talk to us first) |
+| standard | **email** | Email |  | **True** |
+| standard | **phone** | Phone number incl country code |  | **True** |
+| social | **discord_oauth_id** | Discord Oauth 2.0 | id | (talk to us first) |
 | social | **facebook_oauth_id** | Facebook Oauth 2.0 | id | False |
 | social | **github_oauth_id** | GitHub Oauth 2.0 - default use case | id | (talk to us first) |
 | social | **github_apps** | GitHub for Apps and sometimes for Orgs and Enterprises | id | False |
-| social | **google** | Google Oauth 2.0 | sub | (talk to us first) |
-| social | **instagram** | Instagram Oauth 2.0 | user_id | False |
-| social | **linkedin** | LinkedIn Oauth 2.0 | id | (talk to us first) |
-| social | **telegram** | Telegram Oauth 2.0 | id | (talk to us first) |
-| social | **twitter** | Twitter Oauth 2.0 | id | (talk to us first) |
-| uniqueness | **brightid** | BrightID |  | (talk to us first) |
+| social | **google_oauth_sub** | Google Oauth 2.0 | sub | (talk to us first) |
+| social | **instagram_oauth_userid** | Instagram Oauth 2.0 | user_id | False |
+| social | **linkedin_oauth_id** | LinkedIn Oauth 2.0 | id | (talk to us first) |
+| social | **telegram_oauth_id** | Telegram Oauth 2.0 | id | (talk to us first) |
+| social | **twitter_oauth_id** | Twitter Oauth 2.0 | id | (talk to us first) |
+| uniqueness | **brightid** | BrightID |  | False |
 | uniqueness | **gitcoin_passport** | Gitcoin Passport |  | (talk to us first) |
 | uniqueness | **gooddollar** | GoodDollar |  | (talk to us first) |
 | uniqueness | **idena** | Idena Protocol |  | (talk to us first) |
 | uniqueness | **proof_of_humanity** | Proof Of Humanity |  | (talk to us first) |
 | uniqueness | **worldcoin** | Worldcoin |  | (talk to us first) |
+
+Again, for a comprehensive list of blockchain-related stamptypes, refer to the "Blockchain & Crypto" section.
