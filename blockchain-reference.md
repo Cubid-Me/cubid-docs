@@ -25,7 +25,6 @@ The bolded identifiers in this table are what we expect to be used in API calls 
 | Bitcoin (P2SH) | **bitcoin-p2sh** | Base58Check encoding, starts with 3 | 3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy | Bitcoin, Bitcoin Cash, Bitcoin SV |
 | Cardano (Shelley Address) | **cardano** | Bech32 encoding, starts with addr1 | addr1qxw5uvlfpca2g47ln6djg58tflamgnk25m84kxqjgsnfxnm66yeyu8ev7wtqh6 | Cardano |
 | Celo (Mobile Addressing) | **celo-mobile** | Hashing of mobile number to address | +1234567890 -> 0x1234567890abcdef1234567890abcdef12345678 | Celo |
-| Chiliz Address | **chiliz** | EVM-compatible, starts with 0x | 0x3506424f91fdc8930d6a85e880227326c9007f | Chiliz |
 | Cosmos / Terra Address | **cosmos-terra** | Bech32 encoding, starts with cosmos or terra | cosmos1zt50azupanqj7paz6tnrda5tkpqpgrkquf7kvu | Cosmos, Terra |
 | Elrond (eGLD Address) | **elrond** | Bech32 encoding, starts with erd | erd1qqqqqqqqqqqqqpgq9m5qmnw4c7un5mx6vnk0yfvtjvv50wy0qqqqqyrlp7 | Elrond |
 | EVM-Compatible Address | **evm** | 20-byte hexadecimal address, starts with 0x | 0x32Be343B94f860124dC4fEe278FDCBD38C102D88 | Ethereum, Binance Smart Chain, Avalanche C-Chain, Polygon, Fantom, Cronos, Arbitrum, Optimism, Celo (1 of 2), Shiba Inu, Chainlink, Uniswap, LEO, Axie Infinity, Aave, Immutable X, etc. |
@@ -126,6 +125,7 @@ Here’s an **alphabetically sorted** list of the **top 50 chains and protocols*
 - **Bitcoin Cash**: bitcoin-p2pkh, bitcoin-p2sh, bitcoin-segwit  
 - **BNB (Binance Coin)**: evm  
 - **Cardano**: cardano  
+- **Celo** (evm, celo-mobile)
 - **Chainlink**: evm  
 - **Chiliz**: chiliz  
 - **Cosmos**: cosmos-terra  

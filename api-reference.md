@@ -38,8 +38,8 @@ This API does the following:
   - **Non-permissive**: If `is_permissive` is `false` or omitted, and `is_blacklisted` is `true` then no `user_id` will be generated, and an error will be returned. Use this scenario if you plan on throwing out the user immediately or want a simple error to react to.
 - Typical vs. Sybil-attack scenarios 
   - **Typical sceneario**: You received a new user and validated against CUBID. You will receive `is_sybil_attack` = `false` and `is_blacklisted` = `false`, indicating all is good
-  - **Sybil attack scenario**: The person tried to create a second account with your App, which CUBID detected as a reentrancy into your app, classified as a Sybil attack. You received `is_sybil_attack` = `true`. 
-  - **Sybil attack scenario 2**: The user had previously tried to create two or more accounts with this AuthIdentity, which CUBID had detected as a cross-site Sybil attack. You receive `is_blacklisted` = `true`. 
+  - **Sybil attack scenario, Internal**: The person is trying to create a second (or third etc.) account within your App, which CUBID detected as a reentrancy into your app and classified as a Sybil attack. You received `is_sybil_attack` = `true`. 
+  - **Sybil attack scenario, CUBID-wide**: The user had previously tried to Sybil-attack CUBID as a whole (advertently or inadvertently), by creating two or more CUBID accounts with the same AuthID, which CUBID subsequenlty had detected. You receive `is_blacklisted` = `true`. 
 
 
 
@@ -229,7 +229,12 @@ Example:
 ## 4. Fetch Identity
 
 ### Purpose:
-Retrieves a user's identity data by fetching available stamps and their unique values for a specific user.
+Retrieves a user's identity data by fetching available stamps and their unique values for a specific user. Each stamp can be shared at various levels
+- 1: not shared
+- 2: share presence of stamp only as a bool
+- 3: share hash of the value
+- 4: share the value
+- 5: share the full JSON 
 
 ### Endpoint:
 `POST /api/v2/identity/fetch_identity`
@@ -258,6 +263,11 @@ Example:
 | Field         | Type   | Description                                      |
 |---------------|--------|--------------------------------------------------|
 | stamp_details | Array of JSON | Breakdown of the user’s stamp types, values, and status.  |
+| stamp_type    | String | Error message if something goes wrong.           |
+| share_type    | Int    | 1-5, see above.                                  |
+| value         | Depends| Bool, Hash, Sting or JSON depending on share_type|
+| status        | String | Verified or Unverified.                          |
+| verified_date | Timestamp| Date of last verification. Omitted for unverified.|
 | error         | String | Error message if something goes wrong.           |
 
 Example:
@@ -266,11 +276,14 @@ Example:
   "stamp_details": [
     {
       "stamp_type": "email",
+      "share_type": "4"
       "value": "user@example.com",
       "status": "verified"
+      "verified_date": "May 23, 2024, 13:23:55"
     },
     {
       "stamp_type": "phone",
+      "share_type": "4"
       "value": "14155552671",
       "status": "unverified"
     }
@@ -395,3 +408,216 @@ Example:
 - This API is similar to `/api/v2/score/fetch_score`, with the difference that this API also provides a breakdown of the score into it's components.
 - The score is calculated dynamically based on the schema which was selected and defined as part of your App setup in CUBID's Admin Console.
 - The scoring logic is cumulative across `stamp_types` but not within the same type. In other words, he same `stamp_type` cannot be scored more than once. For example, if the user has three different `evm_accounts`, then only the account with the highest score will be considered in the score.
+
+---
+
+## 7. Fetch User's Rough Location
+
+### Purpose:
+Retrieves user's rough location based on their `user_id` and the corresponding app’s API key. The endpoint returns details about the user’s latitude, longitude, and country, along with the Google Plus code. The geocoordinates have been rounded to the nearest one decimal places and the Plus Code has been truncated to the first six characters. The accuracy of this location data is roughly within 15km / 9 miles of the user's residential location.
+
+### Endpoint:
+`POST /api/v2/identity/fetch_rough_location`
+
+### What It Does:
+- Verifies the API key against the `dapps` table.
+- Fetches and returns user information if the user is linked to the app through the provided `user_id`.
+
+### Request Parameters:
+
+| Parameter | Type   | Required | Description                               |
+|-----------|--------|----------|-------------------------------------------|
+| apikey    | UUIDv4 | Yes      | The API key for authentication.           |
+| user_id   | UUIDv4 | Yes      | The unique user identifier.               |
+
+Example:
+```
+{
+  "apikey": "123e4567-e89b-12d3-a456-426614174000",
+  "user_id": "f12e4567-e89b-42d3-a456-326614174bbb"
+}
+```
+
+### Response:
+
+| Field            | Type   | Description                                      |
+|------------------|--------|--------------------------------------------------|
+| pluscode         | String | The first six characters of Google's Plus code. |
+| coordinates      | JSON   | Latitude and longitude with 1 decimal place      |
+| country          | String | The user’s country.                              |
+| error            | String | Error message if something goes wrong.           |
+
+Example:
+```
+{
+  "pluscode": "7J2X8Q",
+  "coordinates": {
+    "lat": 30.8,
+    "lon": 76.7
+  },
+  "country": "India",
+  "error": null
+}
+```
+
+### Notes:
+- If the API key is invalid, the response will contain a 400 status with an error message: `"Invalid API key"`.
+- Location data of the user in this API is NOT validated by CUBID (as opposed to other stamps). The user has an option to state their one residential address, and can only change it once every 6 months. If you need a validated address, please see our paid KYC APIs.
+
+---
+## 8. Fetch User's Approximate Location
+
+### Purpose:
+Retrieves user's approximate location based on their `user_id` and the corresponding app’s API key. The endpoint returns details such as the user’s latitude, longitude, country, and postal code, along with the Google Plus code and the plain text geographic context (placename) of the pluscode. The geocoordinates have been rounded to the nearest two decimal places, and the postal code has been truncated to the first three digits. Depending on distance from the equator, the accuracy of this location data is roughly 1km / 0.6 miles of the user's actual residential location. (Note that the Pluscode is still 6 characters long in this API, with the lower accuracy of 14km, and the placename has unspecified precision.)
+
+### Endpoint:
+`POST /api/v2/identity/fetch_approx_location`
+
+### What It Does:
+- Verifies the API key against the `dapps` table.
+- Fetches and returns user information if the user is linked to the app through the provided `user_id`.
+
+### Request Parameters:
+
+| Parameter | Type   | Required | Description                               |
+|-----------|--------|----------|-------------------------------------------|
+| apikey    | UUIDv4 | Yes      | The API key for authentication.           |
+| user_id   | UUIDv4 | Yes      | The unique user identifier.               |
+
+Example:
+```
+{
+  "apikey": "123e4567-e89b-12d3-a456-426614174000",
+  "user_id": "f12e4567-e89b-42d3-a456-326614174bbb"
+}
+```
+
+### Response:
+
+| Field            | Type   | Description                                        |
+|------------------|--------|----------------------------------------------------|
+| pluscode         | String | The first six characters of Google's Plus code.    |
+| placename        | String | The plain text geographic context of the Plus code |
+| coordinates      | JSON   | Latitude and longitude with 2 decimal places       |
+| country          | String | The user’s country.                                |
+| postalcode       | String | The user’s postal code, 3 first digits.            |
+| error            | String | Error message if something goes wrong.             |
+
+Example:
+```
+{
+  "pluscode": "59V3H3",
+  "placename": "Nesbyen, Norway",
+  "coordinates": {
+    "lat": 60.47,
+    "lon": 8.46
+  },
+  "country": "Norway",
+  "postalcode": "354",
+  "error": null
+}
+```
+
+### Notes:
+- If the API key is invalid, the response will contain a 400 status with an error message: `"Invalid API key"`.
+- Location data of the user in this API is NOT validated by CUBID (as opposed to other stamps). The user has an option to state their one residential address, and can only change it once every 6 months. If you need a validated address, please see our paid KYC APIs.
+
+---
+
+## 9. Fetch User's Exact Location
+
+### Purpose:
+Retrieves user's exact location, as stated by the user, based on their `user_id` and the corresponding app’s API key. The endpoint returns the full details from Google Places API, plus the latitude longitude, country, and postal code, all with full accuracy.
+
+### Endpoint:
+`POST /api/v2/identity/fetch_exact_location`
+
+### What It Does:
+- Verifies the API key against the `dapps` table.
+- Fetches and returns user information if the user is linked to the app through the provided `user_id`.
+
+### Request Parameters:
+
+| Parameter | Type   | Required | Description                               |
+|-----------|--------|----------|-------------------------------------------|
+| apikey    | UUIDv4 | Yes      | The API key for authentication.           |
+| user_id   | UUIDv4 | Yes      | The unique user identifier.               |
+
+Example:
+```
+{
+  "apikey": "123e4567-e89b-12d3-a456-426614174000",
+  "user_id": "f12e4567-e89b-42d3-a456-326614174bbb"
+}
+```
+
+### Response:
+
+| Field            | Type   | Description                                      |
+|------------------|--------|--------------------------------------------------|
+| place            | JSON   | Full Google Places information for the location. |
+| coordinates      | JSON   | Latitude and longitude with all decimal places   |
+| country          | String | The user’s country.                              |
+| error            | String | Error message if something goes wrong.           |
+
+Example:
+```
+{
+  "place": {
+    "address": "36 Lisgar St, Toronto, ON M6J 0C7, Canada",
+    "postcode": "M6j0c7",
+    "locationDetails": {
+      "business_status": "OPERATIONAL",
+      "formatted_address": "36 Lisgar St, Toronto, ON M6J 0C7, Canada",
+      "geometry": {
+        "location": {
+          "lat": 43.6418878,
+          "lng": -79.4232449
+        },
+        "viewport": {
+          "northeast": {
+            "lat": 43.64305407989271,
+            "lng": -79.42179222010728
+          },
+          "southwest": {
+            "lat": 43.63035442010727,
+            "lng": -79.23449187989273
+          }
+        }
+      },
+      "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/generic_business-71.png",
+      "icon_background_color": "#7B9EB0",
+      "icon_mask_base_uri": "https://maps.gstatic.com/mapfiles/place_api/icons/v2/generic_pinlet",
+      "name": "Condo",
+      "place_id": "ChIJyYzJFo01K4gRW-WfkiUbM44",
+      "plus_code": {
+        "compound_code": "JHRG+QP Toronto, Ontario, Canada",
+        "global_code": "87M2JHRG+QP"
+      },
+      "rating": 0,
+      "reference": "ChIJyYzJFo01K4gRW-WfkiUbM44",
+      "types": [
+        "point_of_interest",
+        "establishment"
+      ],
+      "user_ratings_total": 0
+    },
+    "coordinates": {
+      "lat": 43.6328906,
+      "lon": -79.2562693
+    }
+  }
+  "coordinates": {
+    "lat": 43.6328906,
+    "lon": -79.2562693
+  },
+  "country": "Canada",
+  "error": null
+}
+```
+
+### Notes:
+- If the API key is invalid, the response will contain a 400 status with an error message: `"Invalid API key"`.
+- Location data of the user in this API is NOT validated by CUBID (as opposed to other stamps). The user has an option to state their one residential address, and can only change it once every 6 months. If you need a validated address, please see our paid KYC APIs.
+- If the user didn't provide a location then the place may be empty. In such case, Cubid may still have information about the Coordinates, for example if the user allowed Cubid access to their device information. If place is given, then Country would come from there, otherwise Country would be derived from the Coordinates.
+
