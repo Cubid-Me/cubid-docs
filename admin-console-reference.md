@@ -1,12 +1,12 @@
 # Admin Console Reference
 
 ## **Authenticate & Login**
-Developers can access the Admin Console [here]](https://admin.cubid.me).
+Developers can access the Admin Console [here](https://admin.cubid.me).
 
 Like all CUBID sites, there is no registration or password required. Instead we leverage one-time passwords. Enter your email and get a one-time-passcode via email. Then enter the passcode into the prompt and that's it.
 
 ### Empty Dashboard
-There is no registration required. If you log in for the first time you are greeted by an empty screen and a message "No Apps Found". Returning users can immediately access and continure configuring their apps. There are also very few "Save" buttons. Instead, changes take effect immediately.
+There is no registration required. If you log in for the first time you are greeted by an empty screen and a message "No Apps Found". Returning users can immediately access and continure configuring their apps.
 
 ## **Create App** 
 ### Step 1: Setup
