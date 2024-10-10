@@ -34,8 +34,9 @@ This API does the following:
 
 ### Cases:
 - Permissive vs. non-permissive
-  - **Permissive**: If `is_permissive` and `is_blacklisted` are both `true` then a `user_id` will be generated. Use this setting if you want to create the app-user and handle the issue within your app.
-  - **Non-permissive**: If `is_permissive` is `false` or omitted, and `is_blacklisted` is `true` then no `user_id` will be generated, and an error will be returned. Use this scenario if you plan on throwing out the user immediately or want a simple error to react to.
+  - **Permissive**: If `is_permissive` is `true` then a `user_id` will be generated regardless of current or resulting `blacklisted` status. Use this setting if you want to create the app-user regardless, and plan on handling the issue within your app.
+  - **Non-permissive**: If `is_permissive` is `false` or omitted, and if either the user credential is already blacklisted then no `user_id` will be generated, and an error will be returned. Use this scenario if you plan on throwing out the user immediately or want a simple error to react to.
+  - Note: Typically, Cubid blacklists stamps, not users. The permissive vs non-permissive flag does not relate to the status of the various stamps of a user. But each login credentilal is also a stamp in and of itself within CUBID. A blacklisted login credential indicates either that the credential has been hacked, or simply that the user didn't respond to CUBID's attempts to notify them in the past about verifying account duplications. 
 - Typical vs. Sybil-attack scenarios 
   - **Typical sceneario**: You received a new user and validated against CUBID. You will receive `is_sybil_attack` = `false` and `is_blacklisted` = `false`, indicating all is good
   - **Sybil attack scenario, Internal**: The person is trying to create a second (or third etc.) account within your App, which CUBID detected as a reentrancy into your app and classified as a Sybil attack. You received `is_sybil_attack` = `true`. 
