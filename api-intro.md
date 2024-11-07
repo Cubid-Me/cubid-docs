@@ -1,6 +1,11 @@
 # API v2 Overview
 This v2 API documentation simplifies and enhances consistency across endpoints while maintaining robust security and functionality for both Web2 and Web3 platforms.
 
+Our main SDK is available for npm only currently, with yarn etc. coming soon:
+- NPM: https://www.npmjs.com/package/cubid-sdk
+- Storybook: https://cubid-sdk-storybook.netlify.app/
+- Github: https://github.com/Cubid-Me/cubid-sdk
+
 ## Overview
 
 #### App-scoped User IDs
