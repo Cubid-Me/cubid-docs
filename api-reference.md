@@ -3,7 +3,7 @@
 ## 1. Create App-scoped User
 
 ### Purpose:
-This API enables seamless integration between your app and the Cubid ecosystem by managing user identity creation and association. It takes an AuthID as input. It then automatically creates a new app-user (`user_id`) if one does not already exist, and links this user to a Cubid identity stamp based on their provided AuthID (e.g., `email`, `phone`). Additionally, it returns whether the app-user was newly created (`is_new_app_user`), whether this is the first association for the Cubid user or the same human posing a a new user (`is_sybil_attack`), and also whether the AuthID was blacklisted (`is_blacklisted`), thereby helping to detect potential Sybil attacks.
+This API enables seamless integration between your app and the Cubid ecosystem by managing user identity creation and association. It takes an AuthID as input. It then automatically creates a new app-user (`user_id`) if one does not already exist, and links this user to a Cubid identity credential based on their provided AuthID (e.g., `email`, `phone`). Additionally, it returns whether the app-user was newly created (`is_new_app_user`), whether this is the first association for the Cubid user or the same human posing a a new user (`is_sybil_attack`), and also whether the AuthID was blacklisted (`is_blacklisted`), thereby helping to detect potential Sybil attacks.
 
 ### More Info:
 Typically use this upon a new user sucessfully authenticating and either starting or completing the new user registration with your app. Also use when an existing user returns which you hadn't previously registered with CUBID.
@@ -21,12 +21,16 @@ Examples of use cases where this applies include:
 ### Endpoint:
 `POST /api/v2/create_user`
 
+### Status:
+Active for email and phone (EVM coming soon).
+Available in our NPM SDK.
+
 ### What It Does:
 This API does the following: 
 - creates a new app-user (`user_id`) for your App if none exists
 - creates a new cubid-user if none existed
-- creates a stamp for the provided AuthID (e.g. email, phone) in CUBID if it didn't already exist
-- associates the new app-user with the stamp
+- creates a credential for the provided AuthID (e.g. email, phone) in CUBID if it didn't already exist
+- associates the new app-user with the credential
 - returns the `user_id` along with three booleans: 
   1. `is_new_app_user`: Set to `true` if we had to create a new app-user or `false` if it already existed  (which you would presumably already know, if your app keeps track of attempts)
   2. `is_sybil_attack`: Set to `false` if this is the first app-user for this human / cubid-user, or `true` if it's a subsequent one (i.e. the person had used CUBID elsewhere and disclosed that they own both AuthIDs separately, and is now using them to Sybil attack your protocol)
@@ -36,7 +40,7 @@ This API does the following:
 - Permissive vs. non-permissive
   - **Permissive**: If `is_permissive` is `true` then a `user_id` will be generated regardless of current or resulting `blacklisted` status. Use this setting if you want to create the app-user regardless, and plan on handling the issue within your app.
   - **Non-permissive**: If `is_permissive` is `false` or omitted, and if either the user credential is already blacklisted then no `user_id` will be generated, and an error will be returned. Use this scenario if you plan on throwing out the user immediately or want a simple error to react to.
-  - Note: Typically, Cubid blacklists stamps, not users. The permissive vs non-permissive flag does not relate to the status of the various stamps of a user. But each login credentilal is also a stamp in and of itself within CUBID. A blacklisted login credential indicates either that the credential has been hacked, or simply that the user didn't respond to CUBID's attempts to notify them in the past about verifying account duplications. 
+  - Note: Typically, Cubid blacklists credentials, not users. The permissive vs non-permissive flag does not relate to the status of the various credentials of a user. But each login credentilal is also a credential in and of itself within CUBID. A blacklisted login credential indicates either that the credential has been hacked, or simply that the user didn't respond to CUBID's attempts to notify them in the past about verifying account duplications. 
 - Typical vs. Sybil-attack scenarios 
   - **Typical sceneario**: You received a new user and validated against CUBID. You will receive `is_sybil_attack` = `false` and `is_blacklisted` = `false`, indicating all is good
   - **Sybil attack scenario, Internal**: The person is trying to create a second (or third etc.) account within your App, which CUBID detected as a reentrancy into your app and classified as a Sybil attack. You received `is_sybil_attack` = `true`. 
@@ -53,7 +57,7 @@ This API does the following:
 | `is_permissive`  | boolean                           | No      | Permissive returns a UUID if the identity is blacklisted. Defaults to non-permissive if omitted, which returns error if the identity is blacklisted.   | TRUE   |
 | `email`          | string                            | (*)      | User's email.                                                      | user@example.com                       |
 | `phone`          | uint                              | (*)      | User's phone number, including country code but without "+" sign.  | 14155552671                            |
-| `evm`            | string, 42 char, starting with 0x | (*)      | User's EVM-compatible public key.                                  | 0x1234567890abcdef1234567890abcdef12345678 |
+| `evm`  (not active yet)          | string, 42 char, starting with 0x | (*)      | User's EVM-compatible public key.                                  | 0x1234567890abcdef1234567890abcdef12345678 |
 
 *) One (and only one) AuthID is required, across all the available options.
 
@@ -113,7 +117,7 @@ Example (user reentering your app with new AuthID, posing as a new user):
 ```
 
 ### Notes:
-- Feel free to approach us with suggestions for other AuthIdentiy `stamp_types` you'd like to see supported.
+- Feel free to approach us with suggestions for other AuthIdentiy credentials (`stamp_types`) you'd like to see supported.
 - `newuser` indicates if the user was new within your App scope. It does not indicate whether or not the user previously existed within the broader CUBID scope.
 ---
 
@@ -124,6 +128,9 @@ Generates a net new Ethereum public key (EVM account) for a user to use within y
 
 ### Endpoint:
 `POST /api/v2/pk/fetch_evm_public_key`
+
+### Status:
+Active (but not yet available in our SDK).
 
 ### What It Does:
 - Generates and stores an Ethereum-compatible account (EVM public / private key pair) for the user.
@@ -180,9 +187,13 @@ Fetches "soft" (unverified and/or shared with other users) data related to a spe
 ### Endpoint:
 `POST /api/v2/identity/fetch_user_data`
 
+### Status:
+API is active
+Available in our NPM SDK.
+
 ### What It Does:
 - Retrieves user data as authorized by the user for this App.
-- Returns stamps and scores associated with the user.
+- Returns credentials and scores associated with the user.
 
 ### Request Parameters:
 
@@ -230,9 +241,9 @@ Example:
 ## 4. Fetch Identity
 
 ### Purpose:
-Retrieves a user's identity data by fetching available stamps and their unique values for a specific user. Each stamp can be shared at various levels
+Retrieves a user's identity data by fetching available credentials and their unique values for a specific user. Each credential can be shared at various levels
 - 1: not shared
-- 2: share presence of stamp only as a bool
+- 2: share presence of credential only (TRUE or FALSE)
 - 3: share hash of the value
 - 4: share the value
 - 5: share the full JSON 
@@ -240,9 +251,13 @@ Retrieves a user's identity data by fetching available stamps and their unique v
 ### Endpoint:
 `POST /api/v2/identity/fetch_identity`
 
+### Status:
+API is active
+Available in our NPM SDK.
+
 ### What It Does:
-- Fetches user stamp data based on their `user_id`.
-- Retrieves the unique values for the stamps.
+- Fetches user credential data based on their `user_id`.
+- Retrieves the unique values for the credentials.
 
 ### Request Parameters:
 
@@ -263,7 +278,7 @@ Example:
 
 | Field         | Type   | Description                                      |
 |---------------|--------|--------------------------------------------------|
-| stamp_details | Array of JSON | Breakdown of the user’s stamp types, values, and status.  |
+| stamp_details | Array of JSON | Breakdown of the user’s credential types, values, and status.  |
 | stamp_type    | String | Error message if something goes wrong.           |
 | share_type    | Int    | 1-5, see above.                                  |
 | value         | Depends| Bool, Hash, Sting or JSON depending on share_type|
@@ -302,6 +317,10 @@ Calculates and returns CUBID's overall score based on the user's identity and en
 
 ### Endpoint:
 `POST /api/v2/score/fetch_score`
+
+### Status:
+API is active
+Available in our NPM SDK.
 
 ### What It Does:
 - Fetches identity and engagement data for the user.
@@ -349,14 +368,18 @@ Example:
 ## 6. Fetch Score Details
 
 ### Purpose:
-Retrieves the score details for a user by calculating their total score based on their stamps, where the score for each stamp is unique depending on how hard it is to forge.
+Retrieves the score details for a user by calculating their total score based on their credentials, where the score for each credential is unique depending on how hard it is to forge.
 
 ### Endpoint:
 `POST /api/v2/score/fetch_score_details`
 
+### Status:
+API is active
+Not yet available in our NPM SDK.
+
 ### What It Does:
-- Fetches and the user’s individual scores for each stamp.
-- Provides a breakdown of stamps and associated values.
+- Fetches and the user’s individual scores for each credential.
+- Provides a breakdown of credentials and associated values.
 
 ### Request Parameters:
 
@@ -377,7 +400,7 @@ Example:
 
 | Field         | Type   | Description                                      |
 |---------------|--------|--------------------------------------------------|
-| score_details | Array of JSON  | Breakdown of the user’s stamp types and values.  |
+| score_details | Array of JSON  | Breakdown of the user’s credential types and values.  |
 | cubid_score | number | The calculated overall proof-of-personhood score        |
 | scoring_schema | uint | Schema identifier           |
 | error         | string | Error message if something goes wrong.           |
@@ -419,6 +442,10 @@ Retrieves user's rough location based on their `user_id` and the corresponding a
 
 ### Endpoint:
 `POST /api/v2/identity/fetch_rough_location`
+
+### Status:
+API is active
+Available in our NPM SDK.
 
 ### What It Does:
 - Verifies the API key against the `dapps` table.
@@ -463,7 +490,7 @@ Example:
 
 ### Notes:
 - If the API key is invalid, the response will contain a 400 status with an error message: `"Invalid API key"`.
-- Location data of the user in this API is NOT validated by CUBID (as opposed to other stamps). The user has an option to state their one residential address, and can only change it once every 6 months. If you need a validated address, please see our paid KYC APIs.
+- Location data of the user in this API is NOT validated by CUBID (as opposed to other credentials). The user has an option to state their one residential address, and can only change it once every 6 months. If you need a validated address, please see our paid KYC APIs.
 
 ---
 ## 8. Fetch User's Approximate Location
@@ -473,6 +500,10 @@ Retrieves user's approximate location based on their `user_id` and the correspon
 
 ### Endpoint:
 `POST /api/v2/identity/fetch_approx_location`
+
+### Status:
+API is active
+Available in our NPM SDK.
 
 ### What It Does:
 - Verifies the API key against the `dapps` table.
@@ -521,7 +552,7 @@ Example:
 
 ### Notes:
 - If the API key is invalid, the response will contain a 400 status with an error message: `"Invalid API key"`.
-- Location data of the user in this API is NOT validated by CUBID (as opposed to other stamps). The user has an option to state their one residential address, and can only change it once every 6 months. If you need a validated address, please see our paid KYC APIs.
+- Location data of the user in this API is NOT validated by CUBID (as opposed to other credentials). The user has an option to state their one residential address, and can only change it once every 6 months. If you need a validated address, please see our paid KYC APIs.
 
 ---
 
@@ -532,6 +563,10 @@ Retrieves user's exact location, as stated by the user, based on their `user_id`
 
 ### Endpoint:
 `POST /api/v2/identity/fetch_exact_location`
+
+### Status:
+API is active
+Available in our NPM SDK.
 
 ### What It Does:
 - Verifies the API key against the `dapps` table.
@@ -619,6 +654,61 @@ Example:
 
 ### Notes:
 - If the API key is invalid, the response will contain a 400 status with an error message: `"Invalid API key"`.
-- Location data of the user in this API is NOT validated by CUBID (as opposed to other stamps). The user has an option to state their one residential address, and can only change it once every 6 months. If you need a validated address, please see our paid KYC APIs.
+- Location data of the user in this API is NOT validated by CUBID (as opposed to other credentials). The user has an option to state their one residential address, and can only change it once every 6 months. If you need a validated address, please see our paid KYC APIs.
 - If the user didn't provide a location then the place may be empty. In such case, Cubid may still have information about the Coordinates, for example if the user allowed Cubid access to their device information. If place is given, then Country would come from there, otherwise Country would be derived from the Coordinates.
 
+---
+## 9. Save Secret
+
+### Purpose:
+Saves a short secret, primarily as a backup mechanism. Examples: encrypted private key, salt, seed, pin or password.  
+
+### Endpoint:
+`POST /api/v2/fetch_approx_location`
+
+### Status:
+API is active
+Available in our NPM SDK.
+
+### What It Does:
+- Receives a secret and stores it
+- Returns success or failure
+
+### Request Parameters:
+
+| Parameter | Type   | Required | Description                               |
+|-----------|--------|----------|-------------------------------------------|
+| apikey    | UUIDv4 | Yes      | The API key for authentication.           |
+| user_id   | UUIDv4 | Yes      | The unique user identifier.               |
+| identifier| text   | Yes      | An identifier of the secret               |
+| secret    | text   | Yes      | The secret value                          |
+
+Example:
+```
+{
+  "apikey": "123e4567-e89b-12d3-a456-426614174000",
+  "user_id": "f12e4567-e89b-42d3-a456-326614174bbb"
+  "identifier": "nameOfMySecret"
+  "secret": "mySuperSecretKey"
+}
+```
+
+### Response:
+
+| Field            | Type   | Description                                        |
+|------------------|--------|----------------------------------------------------|
+|          |  |    |
+
+
+Example:
+```
+{
+  "error": null
+}
+```
+
+### Notes:
+- If the API key is invalid, the response will contain a 400 status with an error message: `"Invalid API key"`.
+- Cubid does not know what the secret is used for, but to ensure it stays safe apps should always encrypt secrets before storing them with Cubid.
+- Consider including a sequential identifier or version as part of the identifier, e.g. "Salt #3".
+- When retreiving the secret later, the user can search by your App name, Timestamp, and your Identifier
