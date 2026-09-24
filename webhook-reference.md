@@ -4,6 +4,47 @@ Below are the detailed descriptions of the webhooks available in CUBID.
 
 
 
+## 0. Credential Status Changed (`credential.status_changed`)
+
+**Trigger**: When your app submits an AuthID (via Create App-scoped User) and Cubid observes that it is greylisted (held by more than one Cubid account) or blacklisted (held by more than one app-user of your app). Delivered only to the app that submitted the AuthID, so no user consent is required. A state your request caused is always delivered; a pre-existing state is delivered once per app-user and credential type.
+
+Subscribe to the exact event name `credential.status_changed` in the Admin Console.
+
+#### Payload
+```json
+{
+  "apiVersion": "v3",
+  "payloadVersion": "2026-05-03",
+  "eventId": "wh_evt_...",
+  "eventType": "credential.status_changed",
+  "createdAt": "2026-09-23T12:34:56.000Z",
+  "requestId": "passport_...",
+  "dapp": { "id": "42" },
+  "subject": { "dappUserUuid": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa" },
+  "data": {
+    "credentialType": "email",
+    "status": "greylisted",
+    "reason": "duplicate_account",
+    "origin": "this_request",
+    "merge": { "available": true, "url": "https://login.cubid.me/merge?credential_type=email" }
+  }
+}
+```
+
+- `subject.dappUserUuid`: your app-scoped `user_id` for the affected user.
+- `data.credentialType`: which AuthID type is affected. The value itself is never sent.
+- `data.status`, `data.reason`, `data.origin`, `data.merge`: same meaning as `credential_status` in the API reference.
+
+Delivery headers (`X-Cubid-Event-Id`, `X-Cubid-Timestamp`, `X-Cubid-Signature-Version`, `X-Cubid-Signature`) follow the v3 signing scheme described in Webhook Intro & Setup.
+
+#### Business Logic
+Recommendations
+- **On `origin = "this_request"`**: the user is almost certainly in your app right now. Show a "This email/phone is already linked to another Cubid account. Merge your accounts?" prompt and link to `data.merge.url` when `available` is true.
+- **On `origin = "pre_existing"`**: notify the user through your normal channels and link to the merge flow.
+- Never try to look up or display the other account. Cubid will not disclose it, and the merge flow handles proof of control.
+
+
+
 ## 1. Blacklisted Stamp (Sybil Attack Detected)
 
 **Trigger**: When a user’s stamp is blacklisted, either due to suspicious activity, account compromise, or Sybil attack detection. This could originate from within your App or in another App within the CUBID ecosystem.

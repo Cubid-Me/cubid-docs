@@ -80,8 +80,21 @@ Example:
 | `user_id`    | UUIDv4  | Unique identifier for the dapp user.            |
 | `is_new_app_user` | Boolean | Indicates if a new user was created for our app.|
 | `is_sybil_attack` | Boolean | Indicates if this is the first time this human (=cubid-user) appears in your app (=`false`), or if it a portential Sybil attack (=`true`).|
-| `is_blacklisted` | Boolean | Indicates if the provided AuthID.|
+| `is_blacklisted` | Boolean | `true` when the provided AuthID is already held by another app-user of your app. Mirrors `credential_status.status === "blacklisted"`. |
+| `credential_status` | Object | Status of the submitted AuthID across Cubid. See below. |
 | error      | String  | Error message if something goes wrong.          |
+
+`credential_status` fields:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `status` | `"clean"` / `"greylisted"` / `"blacklisted"` | `greylisted`: the AuthID is held by more than one Cubid account anywhere in the ecosystem. `blacklisted`: more than one app-user of **your** app holds it. |
+| `reason` | `"duplicate_account"` / `"compromised"` / `null` | Why it is listed. Currently always `duplicate_account` for listed states. |
+| `origin` | `"this_request"` / `"pre_existing"` / `null` | `this_request` means this call produced or escalated the listed state. Prompt the user to merge immediately. `pre_existing` means it was already listed. `null` when clean. |
+| `merge.available` | Boolean | Whether a hosted merge flow can be offered right now. |
+| `merge.url` | String or `null` | Hosted Cubid page where the user proves control of the AuthID and merges accounts. Never contains the AuthID itself. |
+
+Cubid never tells your app **which** other account an AuthID collides with. Show the user a "merge your accounts" prompt and link to `merge.url` when available.
 
 Example (first call, create user):
 ```
@@ -90,6 +103,29 @@ Example (first call, create user):
   "is_new_app_user": true,
   "is_sybil_attack": false,
   "is_blacklisted": false,
+  "credential_status": {
+    "status": "clean",
+    "reason": null,
+    "origin": null,
+    "merge": { "available": false, "url": null }
+  },
+  "error": null
+}
+```
+
+Example (AuthID already belongs to another Cubid account; prompt the user to merge):
+```
+{
+  "user_id": "cccccccc-cccc-cccc-cccc-cccccccccccc",
+  "is_new_app_user": false,
+  "is_sybil_attack": false,
+  "is_blacklisted": false,
+  "credential_status": {
+    "status": "greylisted",
+    "reason": "duplicate_account",
+    "origin": "this_request",
+    "merge": { "available": true, "url": "https://login.cubid.me/merge?credential_type=email" }
+  },
   "error": null
 }
 ```
@@ -119,6 +155,36 @@ Example (user reentering your app with new AuthID, posing as a new user):
 ### Notes:
 - Feel free to approach us with suggestions for other AuthIdentiy credentials (`stamp_types`) you'd like to see supported.
 - `newuser` indicates if the user was new within your App scope. It does not indicate whether or not the user previously existed within the broader CUBID scope.
+---
+
+## 1b. Check Credential Status
+
+### Purpose:
+Ask Cubid whether an AuthID (email, phone, EVM address) you hold is clean, greylisted, or blacklisted, without creating an app-user. Use it from your own backend, or from the browser SDK when a user connects a credential, to show a "merge your accounts" prompt.
+
+### Endpoint:
+`POST /api/v2/fetch_blacklisted_creds`
+
+### Request Parameters:
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `apikey` | String | Yes | Your app's API key. |
+| `cred` | String | Yes | The AuthID value. |
+| `cred_type` | String | No | `email`, `phone`, or `evm`. Narrows the check to that credential type. |
+
+### Response:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `success` | Boolean | Always `true` on 200. |
+| `is_blacklisted` | Boolean | Kept for older integrations. Same as `credential_status.status === "blacklisted"`. |
+| `credential_status` | Object | Same shape as in Create App-scoped User, without `origin`. |
+
+### Notes:
+- The response never contains another user's email, phone, or Cubid id.
+- The former `find_users_with_blacklist` endpoint is deprecated. It now returns this shape and `all_email` is always `{ "email1": null, "email2": null }`.
+
 ---
 
 ## 2. Fetch App-Scoped EVM Public Key
